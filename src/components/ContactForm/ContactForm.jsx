@@ -37,10 +37,10 @@ const ContactForm = ({ onSubmit }) => {
     setContact({ ...INITIAL_STATE });
   };
 
+  const { name, phone } = constact;
+
   const nameId = nanoid();
   const phoneId = nanoid();
-
-  const { name, phone } = constact;
 
   return (
     <form className={css.form} onSubmit={handleSubmit}>
