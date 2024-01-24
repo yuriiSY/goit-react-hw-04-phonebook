@@ -1,4 +1,4 @@
-import { Component } from 'react';
+import { useState, useRef, useEffect } from 'react';
 
 import { nanoid } from 'nanoid';
 import css from './contactForm.module.css';
@@ -8,61 +8,68 @@ const INITIAL_STATE = {
   phone: '',
 };
 
-class ContactForm extends Component {
-  nameId = nanoid();
-  phoneId = nanoid();
-
-  state = {
+const ContactForm = ({ onSubmit }) => {
+  const [constact, setContact] = useState({
     ...INITIAL_STATE,
-  };
+  });
 
-  handleChange = e => {
+  const inputRef = useRef(null);
+
+  useEffect(() => {
+    inputRef.current.focus();
+  }, []);
+
+  const handleChange = e => {
     const { value, name } = e.target;
-    this.setState({
+    setContact({
+      ...constact,
       [name]: value,
     });
   };
 
-  handleSubmit = e => {
+  const handleSubmit = e => {
     e.preventDefault();
-    this.props.onSubmit({ ...this.state });
-    this.reset();
+    onSubmit({ ...constact });
+    reset();
   };
 
-  reset() {
-    this.setState({ ...INITIAL_STATE });
-  }
+  const reset = () => {
+    setContact({ ...INITIAL_STATE });
+  };
 
-  render() {
-    const { name, phone } = this.state;
-    return (
-      <form className={css.form} onSubmit={this.handleSubmit}>
-        <div className={css.formGroup}>
-          <label htmlFor={this.nameId}>Name</label>
-          <input
-            onChange={this.handleChange}
-            id={this.nameId}
-            type="text"
-            name="name"
-            value={name}
-            required
-          />
-        </div>
-        <div className={css.formGroup}>
-          <label htmlFor={this.phoneId}>Phone</label>
-          <input
-            onChange={this.handleChange}
-            id={this.phoneId}
-            type="text"
-            name="phone"
-            value={phone}
-            required
-          />
-        </div>
-        <button type="submit">Add Contact</button>
-      </form>
-    );
-  }
-}
+  const nameId = nanoid();
+  const phoneId = nanoid();
+
+  const { name, phone } = constact;
+
+  return (
+    <form className={css.form} onSubmit={handleSubmit}>
+      <div className={css.formGroup}>
+        <label htmlFor={nameId}>Name</label>
+        <input
+          ref={inputRef}
+          onChange={handleChange}
+          id={nameId}
+          type="text"
+          name="name"
+          value={name}
+          required
+        />
+      </div>
+      <div className={css.formGroup}>
+        <label htmlFor={phoneId}>Phone</label>
+        <input
+          onChange={handleChange}
+          id={phoneId}
+          type="text"
+          name="phone"
+          value={phone}
+          required
+        />
+      </div>
+      <button type="submit">Add Contact</button>
+    </form>
+  );
+};
 
 export default ContactForm;
